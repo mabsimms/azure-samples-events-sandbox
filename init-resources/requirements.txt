@@ -1,0 +1,5 @@
+azure-cli-core
+azure-mgmt-resource
+azure-mgmt-eventhub
+azure-mgmt-compute
+azure-mgmt-monitor
