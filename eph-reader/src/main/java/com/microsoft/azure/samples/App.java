@@ -115,7 +115,7 @@ public class App
 
     private static EventHubReaderConfiguration GetReaderConfiguration() throws java.io.IOException
     {
-        Properties props = LoadProperties("eventhub");
+        Properties props = LoadProperties("eventhub.properties");
         if (props == null)
             props = new Properties();
         Map<String, String> env = System.getenv();
