@@ -30,7 +30,43 @@ token (with listen only permissions) that makes up the connection string, run th
 python listmonenv.py
 ```
 
+Which will look up the log profile for the current subscription, grab the 
+event hub resource identifer and use that to pull the (currently hard coded 
+name) authorization rule and connection string with `listen` rights to that specific event hub (`insights-operational-logs`).  This will produce output
+similar to:
+
+```
+Azure Monitor configured with event hub /subscriptions/3e9c21fc-55b3-4237-9bba-02b6eb204331/resourceGroups/azure-events-eastus2-rg/providers/Microsoft.EventHub/namespaces/azuremonevtseh/AuthorizationRules/RootManageSharedAccessKey
+Subscription ID =         3e9c21fc-55b3-4237-9bba-02b6eb204331
+Resource Group =          azure-events-eastus2-rg
+Event Hub Namespace =     azuremonevtseh
+Event Hub Name =          insights-operational-logs
+Authorization rule name = listen
+Authorization token =     CxCbQfeUwbTStkszMyYiQPpgm9QGrEG+ybfv+D4fgZY=
+
+Use this as the connection string for reading events:
+
+Endpoint=sb://azuremonevtseh.servicebus.windows.net/;SharedAccessKeyName=listen;SharedAccessKey=CxCbQfeUwbTStkszMyYiQPpgm9QGrEG+ybfv+D4fgZY=;EntityPath=insights-operational-logs
+
+Use this values in the event hub properties file for eph-reader:
+
+EventHubNamespace = "azuremonevtseh"
+EventHubName = "insights-operational-logs"
+SasKeyName = "listen"
+SasKeyValue = "CxCbQfeUwbTStkszMyYiQPpgm9QGrEG+ybfv+D4fgZY="
+
+Use these as the environment variables for eph-reader (instead of properties file
+
+export EventHubNamespace="azuremonevtseh"
+export EventHubName="insights-operational-logs"
+export SasKeyName="listen"
+export SasKeyValue="CxCbQfeUwbTStkszMyYiQPpgm9QGrEG+ybfv+D4fgZY="
+
+Note: you will also have to supply a storage account for handling checkpoint data
+```
+
 ## Open Issues
 
+- The creation script needs to take an Azure location as a parameter (command line)
 - Storage account names (which are inherently globally scoped) are not being randomly generated
-- Need an additional script to extract a properties file with the necessary settings
+
