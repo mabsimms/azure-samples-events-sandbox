@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,7 +50,7 @@ public class App
                 config.EventHubNamespace, config.EventHubName, config.SasKeyName, config.SasKeyValue);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Configure metrics reporting
+        // Configure metrics reporting - todo add the custom reporter back in
 //        final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricsRegistry)
  //               .outputTo(LoggerFactory.getLogger("com.microsoft.azure.samples.metrics"))
   //              .convertRatesTo(TimeUnit.SECONDS)
@@ -84,7 +83,6 @@ public class App
         processorOptions.setReceiveTimeOut(config.ReceiveTimeout);
         processorOptions.setInitialOffsetProvider(config.InitialOffsetProvider);
 
-        // TODO a real function here
         MessageDispatcher runner = new MessageDispatcher();
         Consumer<EventData> single = (evt) -> runner.ProcessMessage(evt);
         Consumer<EventData[]> batch = (evts) -> runner.ProcessMessages(evts);
