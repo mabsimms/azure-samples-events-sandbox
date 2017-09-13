@@ -5,9 +5,7 @@ import com.codahale.metrics.Slf4jReporter;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
-import com.microsoft.azure.samples.ephreader.ErrorNotificationHandler;
-import com.microsoft.azure.samples.ephreader.EventHubProcessorFactory;
-import com.microsoft.azure.samples.ephreader.EventHubReaderConfiguration;
+import com.microsoft.azure.samples.ephreader.*;
 import com.microsoft.azure.servicebus.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.StringUtil;
 import org.slf4j.Logger;
@@ -85,11 +83,13 @@ public class App
         processorOptions.setInitialOffsetProvider(config.InitialOffsetProvider);
 
         // TODO a real function here
-        Consumer<EventData> func = (evt) -> System.out.println("Got event!");
+        MessageDispatcher runner = new MessageDispatcher();
+        EventConcurrentDispatcher concurrentDispatcher = new EventConcurrentDispatcher(
+            config.DispatchConcurrency, (evt) -> runner.ProcessMessage(evt));
 
         try
         {
-            EventHubProcessorFactory factory = new EventHubProcessorFactory(metricsRegistry, func);
+            EventHubProcessorFactory factory = new EventHubProcessorFactory(metricsRegistry, concurrentDispatcher);
             host.registerEventProcessorFactory(factory);
         }
         catch (Exception e)
@@ -154,7 +154,7 @@ public class App
         if (props.containsKey("SasKeyValue"))
             config.SasKeyValue = props.getProperty("SasKeyValue");
         if (env.containsKey("SasKeyValue"))
-            config.SasKeyName = env.get("SasKeyValue");
+            config.SasKeyValue = env.get("SasKeyValue");
         if (StringUtil.isNullOrEmpty(config.SasKeyValue))
             throw new IllegalArgumentException("No value provided for SasKeyValue in eventhub.properties in environment variable SasKeyValue");
 
@@ -173,10 +173,15 @@ public class App
         else
             config.PrefetchCount = 300;
 
+        if (props.containsKey("DispatchConcurrency"))
+            config.DispatchConcurrency = Integer.parseInt(props.getProperty("DispatchConcurrency"));
+        else
+            config.DispatchConcurrency = 1;  // default to "single threaded" mode
+
         if (props.containsKey("ReceiveTimeout"))
             config.ReceiveTimeout = Duration.parse(props.getProperty("ReceiveTimeout"));
         else
-            config.ReceiveTimeout = Duration.parse("00:30:00");
+            config.ReceiveTimeout = Duration.parse("PT30S");
 
         if (props.containsKey("InvokeProcessorAfterReceiveTimeout "))
             config.InvokeProcessorAfterReceiveTimeout = Boolean.parseBoolean(props.getProperty("InvokeProcessorAfterReceiveTimeout "));

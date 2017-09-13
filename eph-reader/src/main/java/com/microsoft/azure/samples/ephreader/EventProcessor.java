@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import static com.codahale.metrics.MetricRegistry.name;
@@ -21,17 +25,17 @@ public class EventProcessor implements IEventProcessor
 {
     static Logger logger = LoggerFactory.getLogger(EventProcessor.class);
 
-    private Consumer<EventData> processorFunction;
+    private EventConcurrentDispatcher dispatcher;
     private MetricRegistry metricRegistry;
 
     private final Timer messageProcessMetric;
     private final Timer batchProcessMetric;
 
 
-    public EventProcessor(MetricRegistry metricRegistry, Consumer<EventData> processorFunc)
+    public EventProcessor(MetricRegistry metricRegistry, EventConcurrentDispatcher dispatcher)
     {
         this.metricRegistry = metricRegistry;
-        this.processorFunction = processorFunc;
+        this.dispatcher = dispatcher;
 
         messageProcessMetric = metricRegistry.timer(name(EventProcessor.class, "process-message"));
         batchProcessMetric = metricRegistry.timer(name(EventProcessor.class, "process-batch"));
@@ -64,24 +68,31 @@ public class EventProcessor implements IEventProcessor
         final Timer.Context batchContext = batchProcessMetric.time();
         try {
             if (messages == null) {
-                logger.debug("EventProcessor on event hub {} partition {} consumer {} processing ZERO events",
+                logger.info("EventProcessor on event hub {} partition {} consumer {} processing ZERO events",
                         context.getEventHubPath(), context.getPartitionId(), context.getConsumerGroupName());
                 return;
             }
 
+            List<Future> futures = new ArrayList<Future>();
+
             EventData lastEvent = null;
             for (EventData data : messages) {
-                processEvent(data);
+                Future future = dispatcher.submit(data);
+                futures.add(future);
                 lastEvent = data;
             }
 
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+            futures.get(0).get();
+
             if (lastEvent != null) {
-                logger.debug("EventProcessor on event hub {} partition {} consumer {} checkpointing at {}:{}",
+                logger.info("EventProcessor on event hub {} partition {} consumer {} checkpointing at {}:{}",
                         context.getEventHubPath(), context.getPartitionId(), context.getConsumerGroupName(),
                         lastEvent.getSystemProperties().getOffset(), lastEvent.getSystemProperties().getSequenceNumber());
                 context.checkpoint(lastEvent);
             } else {
-                logger.debug("EventProcessor on event hub {} partition {} consumer {} processing ZERO events; no checkpoint",
+                logger.info("EventProcessor on event hub {} partition {} consumer {} processing ZERO events; no checkpoint",
                         context.getEventHubPath(), context.getPartitionId(), context.getConsumerGroupName());
             }
         }
@@ -99,7 +110,7 @@ public class EventProcessor implements IEventProcessor
         try
         {
             MDC.put("Request-Id", "");
-            this.processorFunction.accept(evt);
+            //this.processorFunction.accept(evt);
             MDC.remove("Request-Id");
         }
         catch (Exception e)

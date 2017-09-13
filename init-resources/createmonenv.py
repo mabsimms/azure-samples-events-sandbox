@@ -136,6 +136,8 @@ def configure_azure_monitor(resource_group_name, location, event_hub_namespace, 
             )
         )
     )
+    
+    # TODO - find the implicitly craeated event hub and add sas policies for read
     print(log_profile)
 
 def print_item(group):

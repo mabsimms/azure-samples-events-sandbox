@@ -11,18 +11,18 @@ import java.util.function.Consumer;
 public class EventHubProcessorFactory implements IEventProcessorFactory {
 
     private final MetricRegistry metricRegistry;
-    private final Consumer<EventData> processorFunc;
+    private final EventConcurrentDispatcher dispatcher;
 
-    public EventHubProcessorFactory(MetricRegistry metricRegistry, Consumer<EventData> processorFunction)
+    public EventHubProcessorFactory(MetricRegistry metricRegistry, EventConcurrentDispatcher dispatcher)
     {
         this.metricRegistry = metricRegistry;
-        this.processorFunc = processorFunction;
+        this.dispatcher = dispatcher;
     }
 
     @Override
     public IEventProcessor createEventProcessor(PartitionContext partitionContext) throws Exception
     {
-        EventProcessor processor = new EventProcessor(metricRegistry, processorFunc);
+        EventProcessor processor = new EventProcessor(metricRegistry, dispatcher);
         return processor;
     }
 }
