@@ -141,7 +141,7 @@ def configure_azure_monitor(resource_group_name, location, event_hub_namespace, 
     print("Creating listen policy for implicitly created event hug")
     event_hub_name_implicit = "insights-operational-logs"
     auth_rule = eventHubClient.event_hubs.create_or_update_authorization_rule(resource_group_name, event_hub_namespace, event_hub_name_implicit, "listen", "Listen")
-    key = list_keys(resource_group_name, event_hub_namespace, event_hub_name_implicit, "listen")
+    key = eventHubClient.event_hubs.list_keys(resource_group_name, event_hub_namespace, event_hub_name_implicit, "listen")
     print("Use authorization rule with Listen rights named " + key.key_name + " and connection string " + key.primary_connection_string)
     
 
