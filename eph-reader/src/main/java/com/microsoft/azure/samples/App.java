@@ -1,15 +1,12 @@
 package com.microsoft.azure.samples;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Slf4jReporter;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
 import com.microsoft.azure.samples.ephreader.*;
 import com.microsoft.azure.servicebus.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,17 +18,22 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    static Logger logger = LoggerFactory.getLogger(App.class);
+    static Logger logger = LogManager.getLogger(App.class);
     static MetricRegistry metricsRegistry = new MetricRegistry();
 
     public static void main( String[] args )
     {
+        logger.info("Pulling configuration information");
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Instantiate configuration
         EventHubReaderConfiguration config;
@@ -50,12 +52,12 @@ public class App
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Configure metrics reporting
-        final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricsRegistry)
-                .outputTo(LoggerFactory.getLogger("com.microsoft.azure.samples.metrics"))
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        reporter.start(15, TimeUnit.SECONDS);
+//        final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricsRegistry)
+ //               .outputTo(LoggerFactory.getLogger("com.microsoft.azure.samples.metrics"))
+  //              .convertRatesTo(TimeUnit.SECONDS)
+   //             .convertDurationsTo(TimeUnit.MILLISECONDS)
+    //            .build();
+     //   reporter.start(15, TimeUnit.SECONDS);
         // TODO - output to graphite as well if configured
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,12 +86,13 @@ public class App
 
         // TODO a real function here
         MessageDispatcher runner = new MessageDispatcher();
-        EventConcurrentDispatcher concurrentDispatcher = new EventConcurrentDispatcher(
-            config.DispatchConcurrency, (evt) -> runner.ProcessMessage(evt));
+        Consumer<EventData> single = (evt) -> runner.ProcessMessage(evt);
+        Consumer<EventData[]> batch = (evts) -> runner.ProcessMessages(evts);
 
         try
         {
-            EventHubProcessorFactory factory = new EventHubProcessorFactory(metricsRegistry, concurrentDispatcher);
+            EventHubProcessorFactory factory = new EventHubProcessorFactory(metricsRegistry,
+                config.DispatchMode, single, batch, config.DispatchConcurrency);
             host.registerEventProcessorFactory(factory);
         }
         catch (Exception e)

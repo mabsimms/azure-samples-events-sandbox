@@ -20,5 +20,7 @@ public class EventHubReaderConfiguration
     public int PrefetchCount;
     public Duration ReceiveTimeout;
     public Function<String,Object> InitialOffsetProvider;
+
     public int DispatchConcurrency;
+    public DispatchMode DispatchMode;
 }

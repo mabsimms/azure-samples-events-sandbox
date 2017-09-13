@@ -2,43 +2,51 @@ package com.microsoft.azure.samples.ephreader;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.google.common.base.Stopwatch;
+import com.google.common.collect.Iterables;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.CloseReason;
 import com.microsoft.azure.eventprocessorhost.IEventProcessor;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static com.codahale.metrics.MetricRegistry.name;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class EventProcessor implements IEventProcessor
 {
-    static Logger logger = LoggerFactory.getLogger(EventProcessor.class);
+    static Logger logger = LogManager.getLogger(EventProcessor.class);
 
-    private EventConcurrentDispatcher dispatcher;
     private MetricRegistry metricRegistry;
 
     private final Timer messageProcessMetric;
     private final Timer batchProcessMetric;
+    private final ExecutorService executor;
+    private final DispatchMode mode;
+    private final int dop;
 
+    private final Consumer<EventData> single;
+    private final Consumer<EventData[]> batch;
 
-    public EventProcessor(MetricRegistry metricRegistry, EventConcurrentDispatcher dispatcher)
+    public EventProcessor(MetricRegistry metricRegistry, DispatchMode mode, int dop,
+        Consumer<EventData> singleFunction, Consumer<EventData[]> batchFunction)
     {
         this.metricRegistry = metricRegistry;
-        this.dispatcher = dispatcher;
+        this.mode = mode;
+        this.batch = batchFunction;
+        this.single = singleFunction;
+        this.dop = dop;
 
         messageProcessMetric = metricRegistry.timer(name(EventProcessor.class, "process-message"));
         batchProcessMetric = metricRegistry.timer(name(EventProcessor.class, "process-batch"));
+
+        this.executor = new ThreadPoolExecutor(dop, dop , 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
@@ -51,8 +59,9 @@ public class EventProcessor implements IEventProcessor
     @Override
     public void onClose(PartitionContext context, CloseReason reason) throws Exception
     {
-        logger.info("EventProcessor on event hub {} opening partition {} for consumer {} for reason {}",
+        logger.info("EventProcessor on event hub {} closing partition {} for consumer {} for reason {}",
                 context.getEventHubPath(), context.getPartitionId(), context.getConsumerGroupName(), reason);
+        this.executor.shutdown();
     }
 
     @Override
@@ -73,20 +82,23 @@ public class EventProcessor implements IEventProcessor
                 return;
             }
 
-            List<Future> futures = new ArrayList<Future>();
+            EventData[] messageArray = Iterables.toArray(messages, EventData.class);
 
-            EventData lastEvent = null;
-            for (EventData data : messages) {
-                Future future = dispatcher.submit(data);
-                futures.add(future);
-                lastEvent = data;
+            if (mode == DispatchMode.Batch)
+            {
+                executor.execute( () -> ProcessBatch(messageArray));
+            }
+            else
+            {
+                List<Callable<Void>> callableList = new ArrayList<Callable<Void>>();
+                for (EventData evt : messageArray) {
+                    callableList.add( () -> { processEvent(evt); return null; });
+                }
+                executor.invokeAll(callableList);
             }
 
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-
-            futures.get(0).get();
-
-            if (lastEvent != null) {
+            if (messageArray.length > 0) {
+                EventData lastEvent = messageArray[messageArray.length-1];
                 logger.info("EventProcessor on event hub {} partition {} consumer {} checkpointing at {}:{}",
                         context.getEventHubPath(), context.getPartitionId(), context.getConsumerGroupName(),
                         lastEvent.getSystemProperties().getOffset(), lastEvent.getSystemProperties().getSequenceNumber());
@@ -102,6 +114,31 @@ public class EventProcessor implements IEventProcessor
         }
     }
 
+    private void ProcessBatch(EventData[] messages)
+    {
+        final Timer.Context context = messageProcessMetric.time();
+        boolean success = true;
+
+        try
+        {
+            this.batch.accept(messages);
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        finally
+        {
+            context.stop();
+        }
+
+        // If the message could not be successfully processed ensure that it is published to a storage for later
+        // review.
+        if (!success) {
+            // TODO
+        }
+    }
+
     protected void processEvent(EventData evt)
     {
         final Timer.Context context = messageProcessMetric.time();
@@ -109,14 +146,13 @@ public class EventProcessor implements IEventProcessor
 
         try
         {
-            MDC.put("Request-Id", "");
-            //this.processorFunction.accept(evt);
-            MDC.remove("Request-Id");
+            //MDC.put("Request-Id", "");
+            this.single.accept(evt);
+            //MDC.remove("Request-Id");
         }
         catch (Exception e)
         {
             success = false;
-        //    logger.warn();
         }
         finally
         {
@@ -127,7 +163,7 @@ public class EventProcessor implements IEventProcessor
         // review.
         if (!success)
         {
-
+            // TODO
         }
     }
 }
