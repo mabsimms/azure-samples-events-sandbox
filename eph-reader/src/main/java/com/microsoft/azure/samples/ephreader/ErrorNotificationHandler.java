@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ErrorNotificationHandler implements Consumer<ExceptionReceivedEventArgs>
 {
-    static Logger logger = LogManager.getLogger(App.class);
+    static Logger logger = LogManager.getLogger();
 
     private final String eventHubName;
 

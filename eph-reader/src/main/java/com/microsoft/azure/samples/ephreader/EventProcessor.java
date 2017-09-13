@@ -20,7 +20,7 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 public class EventProcessor implements IEventProcessor
 {
-    static Logger logger = LogManager.getLogger(EventProcessor.class);
+    static Logger logger = LogManager.getLogger();
 
     private MetricRegistry metricRegistry;
 

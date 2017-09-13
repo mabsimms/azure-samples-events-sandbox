@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MessageDispatcher {
 
-    static Logger logger = LogManager.getLogger(App.class);
+    static Logger logger = LogManager.getLogger();
     private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     public void ProcessMessages(EventData[] data)

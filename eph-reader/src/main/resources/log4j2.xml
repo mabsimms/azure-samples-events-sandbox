@@ -4,14 +4,29 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+
+        <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush.
+        <RandomAccessFile name="File" fileName="ephreader.log" immediateFlush="true" append="true">
+            <JsonLayout>
+                <compact>true</compact>
+                <eventEol>true</eventEol>
+            </JsonLayout>
+        </RandomAccessFile>
+        -->
+        <File name="File" fileName="ephreader.log" immediateFlush="true">
+            <JsonLayout properties="true" compact="true" eventEol="true" />
+        </File>
+
     </Appenders>
     <Loggers>
         <Logger name="com.microsoft.azure.samples.ephreader.MessageDispatcher" level="DEBUG" additivity="false">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
         </Logger>
 
         <Root level="INFO" includeLocation="false">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
         </Root>
     </Loggers>
 </Configuration>

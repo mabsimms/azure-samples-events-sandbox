@@ -16,7 +16,6 @@
     <orderEntry type="library" name="Maven: org.apache.qpid:proton-j:0.19.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-eventhubs-eph:0.14.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-storage:5.3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-keyvault-core:0.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.1" level="project" />
@@ -25,7 +24,9 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.9.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson:jackson-bom:2.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.1" level="project" />
     <orderEntry type="library" name="Maven: com.lmax:disruptor:3.3.6" level="project" />
   </component>
 </module>
