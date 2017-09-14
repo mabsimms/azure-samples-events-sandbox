@@ -1,6 +1,9 @@
 package com.microsoft.azure.samples;
 
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.izettle.metrics.influxdb.InfluxDbHttpSender;
+import com.izettle.metrics.influxdb.InfluxDbSender;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
@@ -15,12 +18,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-/**
+import  com.izettle.metrics.influxdb.InfluxDbReporter;
+/*
  * Hello world!
  *
  */
@@ -50,14 +54,34 @@ public class App
                 config.EventHubNamespace, config.EventHubName, config.SasKeyName, config.SasKeyValue);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Configure metrics reporting - todo add the custom reporter back in
-//        final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricsRegistry)
- //               .outputTo(LoggerFactory.getLogger("com.microsoft.azure.samples.metrics"))
-  //              .convertRatesTo(TimeUnit.SECONDS)
-   //             .convertDurationsTo(TimeUnit.MILLISECONDS)
-    //            .build();
-     //   reporter.start(15, TimeUnit.SECONDS);
-        // TODO - output to graphite as well if configured
+        try {
+            Properties metricsProperties = LoadProperties("metrics.properties");
+            if (metricsProperties.containsKey("influxdb.server"))
+            {
+                String influxServer = metricsProperties.get("influxdb.server").toString();
+                int influxPort = Integer.parseInt( metricsProperties.get("influxdb.port").toString());
+                String influxDb = metricsProperties.get("influxdb.database").toString();
+
+                if (!StringUtil.isNullOrEmpty(influxServer) &&
+                    !StringUtil.isNullOrEmpty(influxDb))
+                {
+                    final InfluxDbSender influxDbSender = new InfluxDbHttpSender("http", influxServer, influxPort, influxDb, "",
+                        TimeUnit.MILLISECONDS, 30, 30, "eph-reader");
+
+                    final InfluxDbReporter reporter = InfluxDbReporter
+                            .forRegistry(metricsRegistry)
+                            .convertRatesTo(TimeUnit.SECONDS)
+                            .convertDurationsTo(TimeUnit.MILLISECONDS)
+                            .filter(MetricFilter.ALL)
+                            .build(influxDbSender);
+                    reporter.start(15, TimeUnit.SECONDS);
+                }
+            }
+        }
+        catch (Exception ie)
+        {
+            logger.warn("Could not instantiate metrics reporter", ie);
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Create the processor host for this instance
