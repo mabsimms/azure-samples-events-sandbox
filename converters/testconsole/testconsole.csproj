@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\azmon.events\azmon.events.csproj" />
+    <ProjectReference Include="..\arcsite-cef\azmon.formatters.cef\azmon.formatters.cef.csproj" />
+  </ItemGroup>
+</Project>

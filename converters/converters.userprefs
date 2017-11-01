@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{0DA7E6CB-2555-411D-A626-74494CFC9D37}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="azmon.events/Class1.cs">
+    <Files>
+      <File FileName="arcsite-cef/azmon.formatters.cef/CefEvent.cs" Line="10" Column="58" />
+      <File FileName="arcsite-cef/azmon.formatters.cef/CefFormatter.cs" Line="72" Column="47" />
+      <File FileName="azmon.events/Class1.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.testconsole PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

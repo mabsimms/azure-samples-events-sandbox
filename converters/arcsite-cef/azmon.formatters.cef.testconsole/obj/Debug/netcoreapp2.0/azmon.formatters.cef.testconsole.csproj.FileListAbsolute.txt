@@ -1,0 +1,10 @@
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/bin/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.deps.json
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/bin/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.runtimeconfig.json
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/bin/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.runtimeconfig.dev.json
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/bin/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.dll
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/bin/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.pdb
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/obj/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.csproj.CoreCompileInputs.cache
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/obj/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.AssemblyInfoInputs.cache
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/obj/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.AssemblyInfo.cs
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/obj/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.dll
+/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef.testconsole/obj/Debug/netcoreapp2.0/azmon.formatters.cef.testconsole.pdb
