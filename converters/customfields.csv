@@ -1,0 +1,117 @@
+﻿CEF Key Name,Field Name,Type,Length
+act,deviceAction,String,63
+app,applicationProtocol,String,31
+c6a1,deviceCustomIPv6Address1,IPv6 address,
+c6a1Label,"deviceCustomIPv6Address1Label",String,1023
+c6a3,deviceCustomIPv6Address3,IPv6 address,
+c6a4,deviceCustomIPv6 Address4,IPv6 address,
+C6a4Label,"deviceCustomIPv6Address4Label",String,1023
+cat,deviceEventCategory,String,1023
+cfp1,deviceCustomFloatingPoint1,"FloatingPoint",
+cfp1Label,"deviceCustomFloatingPoint1Label",String,1023
+cfp2,deviceCustomFloatingPoint2,"FloatingPoint",
+cfp2Label,"deviceCustomFloatingPoint2Label",String,1023
+cfp3,deviceCustomFloatingPoint3,"FloatingPoint",
+cfp3Label,"deviceCustomFloatingPoint3Label",String,1023
+cfp4,deviceCustomFloatingPoint4,"FloatingPoint",
+cfp4Label,"deviceCustomFloatingPoint4Label",String,1023
+cn1,deviceCustomNumber1,Long,
+cn1Label,deviceCustomNumber1Label,String,1023
+cn2,DeviceCustomNumber2,Long,
+cn2Label,deviceCustomNumber2Label,String,1023
+cn3,deviceCustomNumber3,Long,
+cn3Label,deviceCustomNumber3Label,String,1023
+cnt,baseEventCount,Integer,
+cs1,deviceCustomString1,String,4000
+cs1Label,deviceCustomString1Label,String,1023
+cs2,deviceCustomString2,String,4000
+cs2Label,deviceCustomString2Label,String,1023
+cs3Label,deviceCustomString3Label,String,1023
+cs4,deviceCustomString4,String,4000
+cs4Label,deviceCustomString4Label,String,1023
+cs5,deviceCustomString5,String,4000
+cs5Label,deviceCustomString5Label,String,1023
+cs6,deviceCustomString6,String,4000
+cs6Label,deviceCustomString6Label,String,1023
+"destinationDnsDomain",destinationDnsDomain,String,255
+"destinationServiceName",destinationServiceName,String,1023
+"destinationTranslatedAddress","destinationTranslatedAddress",IPv4 Address,
+"destinationTranslatedPort",destinationTranslatedPort,Integer,
+"deviceCustomDate1",deviceCustomDate1,TimeStamp,
+"deviceCustomDate1Label",deviceCustomDate1Label,String,1023
+"deviceCustomDate2",deviceCustomDate2,TimeStamp,
+"deviceCustomDate2Label",deviceCustomDate2Label,String,1023
+deviceDirection,deviceDirection,Integer,
+"deviceDnsDomain",deviceDnsDomain,String,255
+"deviceExternalId",deviceExternalId,String,255
+deviceFacility,deviceFacility,Stirng,1023
+"deviceInboundInterface",deviceInboundInterface,String,128
+"deviceNtDomain",deviceNtDomain,String,255
+"DeviceOutboundInterface",deviceOutboundInterface,String,128
+"DevicePayloadId",devicePayloadId,String,128
+"deviceProcessName",deviceProcessName,String,1023
+dhost,destinationHostName,String,1023
+dmac,destinationMacAddress,"MACAddress",
+dntdom,destinationNtDomain,String,255
+dpid,destinationProcessId,Integer,
+dpriv,destinationUserPrivileges,String,1023
+dproc,destinationProcessName,String,1023
+dpt,destinationPort,Integer,
+dst,destinationAddress,IPv4 Address,
+duid,destinationUserId,String,1023
+duser,destinationUserName,String,1023
+dvc,deviceAddress,IPv4 Address,
+dvchost,deviceHostName,String,100
+dvcmac,deviceMacAddress,"MACAddress",
+dvcpid,deviceProcessId,Integer,
+end,endTime,Time Stamp,
+externalId,externalId,String,40
+fileCreateTime,fileCreateTime,Time Stamp,
+fileHash,fileHash,String,255
+"fileModificationTime",fileModificationTime,Time Stamp,
+filePath,filePath,String,1023
+filePermission,filePermission,String,1023
+fileType,fileType,String,1023
+flexDate1,flexDate1,Time Stamp,
+flexDate1Label,flexDate1Label,String,128
+flexString1,flexString1,String,1023
+"flexString1Label",flexString2Label,String,128
+"flexString2Label",flexString2Label,String,128
+fname,filename,Stirng,1023
+fsize,fileSize,Integer,
+in,bytesIn,Integer,
+msg,message,String,1023
+"oldFileCreateTime",oldFileCreateTime,Time Stamp,
+oldFileHash,oldFileHash,String,255
+oldFileId,oldFileId,String,1023
+"oldFileModificationTime",oldFileModificationTime,Time Stamp,
+oldFileName,oldFileName,String,1023
+oldFilePath,oldFilePath,String,1023
+"oldFilePermission",oldFilePermission,String,1023
+oldFileSize,oldFileSize,Integer,
+out,bytesOut,Integer,
+outcome,eventOutcome,String,63
+proto,transportProtocol,String,31
+reason,Reason,String,1023
+request,requestUrl,String,1023
+"requestClientApplication",requestClientApplication,String,1023
+requestContext,requestContext,String,2048
+requestCookies,requestCookies,String,1023
+requestMethod,requestMethod,String,1023
+rt,deviceReceiptTime,Time Stamp,
+shost,sourceHostName,String,1023
+smac,sourceMacAddress,MAC address,
+sntdom,sourceNtDomain,String,255
+"sourceDnsDomain",sourceDnsDomain,String,255
+"sourceServiceName",sourceServiceName,String,1023
+"sourceTranslatedAddress",sourceTranslatedAddress,IPv4 Address,
+"sourceTranslatedPort",sourceTranslatedPort,Integer,
+spid,sourceProcessId,Integer,
+spriv,sourceUserPrivileges,String,1023
+sproc,sourceProcessName,String,1023
+spt,sourcePort,Integer,
+src,sourceAddress,IPv4 Address,
+start,startTime,Time Stamp,
+suid,sourceUserId,String,1023
+suser,sourceUserName,String,1023
+type,type,Integer,

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETStandard,Version=v2.0": {
       "Microsoft.NETCore.Platforms/1.1.0": {
@@ -25,20 +25,30 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "azmon.events/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/azmon.events.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/azmon.events.dll": {}
+        }
       }
     }
   },
   "libraries": {
     "Microsoft.NETCore.Platforms/1.1.0": {
-      "sha512": "343zDFMQXXfBsy2y5CgSNIgKN0tzd2UfgWTQMmBxmY82Werz4txWO5936QA+3WBI9irSHxJPZojfLfjVE3aY7w==",
+      "sha512": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
       "type": "package",
       "path": "microsoft.netcore.platforms/1.1.0",
       "files": [
-        "Microsoft.NETCore.Platforms.1.1.0.nupkg.sha512",
-        "Microsoft.NETCore.Platforms.nuspec",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/netstandard1.0/_._",
+        "microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+        "microsoft.netcore.platforms.nuspec",
         "runtime.json"
       ]
     },
@@ -169,31 +179,65 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "azmon.events/1.0.0": {
+      "type": "project",
+      "path": "../../azmon.events/azmon.events.csproj",
+      "msbuildProject": "../../azmon.events/azmon.events.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
-      "NETStandard.Library >= 2.0.0"
+      "NETStandard.Library >= 2.0.0",
+      "azmon.events >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "/Users/masimms/.nuget/packages/": {}
+    "C:\\Users\\masimms\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
+    "restoreSettings": {
+      "hideWarningsAndErrors": true
+    },
     "restore": {
-      "projectUniqueName": "/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef/azmon.formatters.cef.csproj",
+      "projectUniqueName": "C:\\code\\azure-samples-events-sandbox\\converters\\arcsite-cef\\azmon.formatters.cef\\azmon.formatters.cef.csproj",
       "projectName": "azmon.formatters.cef",
-      "projectPath": "/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef/azmon.formatters.cef.csproj",
-      "outputPath": "/Users/masimms/code/azure-samples-events-sandbox/converters/arcsite-cef/azmon.formatters.cef/obj",
+      "projectPath": "C:\\code\\azure-samples-events-sandbox\\converters\\arcsite-cef\\azmon.formatters.cef\\azmon.formatters.cef.csproj",
+      "packagesPath": "C:\\Users\\masimms\\.nuget\\packages\\",
+      "outputPath": "C:\\code\\azure-samples-events-sandbox\\converters\\arcsite-cef\\azmon.formatters.cef\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\masimms\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\ServiceFabricSDK.config"
+      ],
       "originalTargetFrameworks": [
         "netstandard2.0"
       ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\Microsoft SDKs\\Service Fabric\\packages": {},
+        "C:\\Users\\masimms\\.dotnet\\NuGetFallbackFolder": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
       "frameworks": {
         "netstandard2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\code\\azure-samples-events-sandbox\\converters\\azmon.events\\azmon.events.csproj": {
+              "projectPath": "C:\\code\\azure-samples-events-sandbox\\converters\\azmon.events\\azmon.events.csproj"
+            }
+          }
         }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
       }
     },
     "frameworks": {
@@ -202,12 +246,15 @@
           "NETStandard.Library": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "2.0.0"
+            "version": "[2.0.0, )",
+            "autoReferenced": true
           }
         },
         "imports": [
           "net461"
-        ]
+        ],
+        "assetTargetFallback": true,
+        "warn": true
       }
     }
   }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace azmon.formatters.cef
 {
@@ -57,15 +60,14 @@ namespace azmon.formatters.cef
         public CefFormatter()
         {
             // Timestamp needs to be written out in a compatible format to 
-            _formatString = DefaultFormatString;	
+            _formatString = DefaultFormatString;
         }
 
         public string CefEventToCefRecord(CefEvent evt)
         {
             var sb = new System.Text.StringBuilder();
 
-            var customExtensions = FormatExtensions(evt);
-            sb.AppendFormat("{0} {1} {2}|{3}|{4}|{5}|{6}|{7}|{8}",
+            sb.AppendFormat("{0} {1} {2}|{3}|{4}|{5}|{6}|{7}|{8}|",
                 evt.Timestamp.ToString(_formatString),
                 evt.Host,
                 evt.CefVersion,
@@ -74,17 +76,14 @@ namespace azmon.formatters.cef
                 EscapeValue(evt.DeviceVersion),
                 EscapeValue(evt.DeviceEventClassID),
                 EscapeValue(evt.Name),
-                EscapeValue(evt.Severity),
-                customExtensions
+                EscapeValue(evt.Severity)
             );
+            CefTransformerCustom.FillCustomProperties(evt.CustomProperties, sb);
+
             return sb.ToString();
         }
 
-        private string FormatExtensions(CefEvent evt)
-        {
-            return string.Empty;
-        }
-
+     
         public string EscapeValue(string str)
         {
             return str
@@ -96,65 +95,112 @@ namespace azmon.formatters.cef
         }
     }
 
-    public class CefExtensionFormatter
-    {
-        protected static readonly CefExtensionField[] producerFields = new CefExtensionField[]
-        {
-            new CefExtensionField("act", "deviceAction", CefDataType.String, 63),
-            new CefExtensionField("app", "applicationProtocol", CefDataType.String, 31),
-            new CefExtensionField("cnt", "baseEventCount", CefDataType.Integer), 
-            new CefExtensionField("c6a1", "rdeviceCustomIPv6Address1", CefDataType.IPv6Address), 
-        };
-        
+    //public class CefExtensionFormatter
+    //{
+    //    private readonly Action<CefCustomProperties, StringBuilder>[] actions;
 
-        protected class CefExtensionField
-        {
-            public CefExtensionField() {}
-            public CefExtensionField(string keyName, string fullName, CefDataType dataType, int length, string meaning = null)
-            {
-                this.KeyName = keyName;
-                this.FullName = fullName;
-                this.DataType = dataType;
-                this.Length = length;
-                this.Meaning = meaning ?? String.Empty; 
-            }
+    //    public CefExtensionFormatter()
+    //    {
+    //        actions = CreateFormatFunctions();
+    //    }
 
-			public CefExtensionField(string keyName, string fullName, CefDataType dataType)
-			{
-				this.KeyName = keyName;
-				this.FullName = fullName;
-				this.DataType = dataType;
-				this.Length = -1;
-				this.Meaning = String.Empty;
-			}
+    //    public string FormatExtensions(CefCustomProperties props)
+    //    {
+    //        var sb = new StringBuilder();
+    //        foreach (var a in actions)
+    //            a(props, sb);
+    //        return sb.ToString();
+    //    }
 
-            public CefExtensionField(string keyName, string fullName, CefDataType dataType, string meaning)
-            {
-                this.KeyName = keyName;
-                this.FullName = fullName;
-                this.DataType = dataType;
-                this.Length = -1;
-                this.Meaning = meaning ?? String.Empty; 
-            }
+    //    protected Action<CefCustomProperties, StringBuilder>[] CreateFormatFunctions()
+    //    {
+    //        var list = new List<Action<CefCustomProperties, StringBuilder>>();
 
-            public string KeyName { get; set; }
-            public string FullName { get; set; } 
-            public CefDataType DataType { get; set; } 
-            public int Length { get; set; }
-            public string Meaning { get; set; }
+    //        var type = typeof(CefCustomProperties);
+    //        var props = type.GetProperties();
+    //        foreach (var p in props)
+    //        {
+    //            // Get the attribute for formatting data
+    //            var attribute = p.GetCustomAttributes(false).OfType<CefFieldAttribute>().First();
+    //            if (attribute == null)
+    //                continue;
 
-        }
+    //            // Generate a lambda for the property extraction
+    //            // TODO - fill these in
+    //            Func<CefCustomProperties, bool> hasValue = (e) => false;
+    //            Func<CefCustomProperties, string> getValue = (e) => "";
 
-       
-    }
+                
+    //            // Generate a lambda for the property formatting
+    //            Action<CefCustomProperties, StringBuilder> action = (cef, sb) =>
+    //            {
+    //                sb.Append(attribute.KeyName);
+    //                sb.Append('=');
+
+    //                // TODO switch to a function
+    //                var value = EscapeCustomRecord(
+    //                    FormatValue(attribute.DataType, getValue(cef)));
+    //                sb.Append(value);
+    //            };
+
+    //            // Add the lambda chain to the list
+    //            list.Add(action);                
+    //        }
+    //        return list.ToArray();
+    //    }       
+
+    //    public static string EscapeCustomRecord(string rec)
+    //    {
+    //        return rec
+    //            .Replace("=", "\\=")  // Equals must be escaped \\
+    //            .Replace("\\", "\\\\")  // Backslash must be escaped \\
+    //            .Replace("\r", "\\r")   // Newlines must be encoded
+    //            .Replace("\n", "\\n");             
+    //    }
+
+    //    public static string FormatValue(CefDataType dataType, object val)
+    //    {
+
+    //        // Format the result based on the type
+    //        switch (dataType)
+    //        {
+    //            case CefDataType.FloatingPoint:
+    //                break;
+
+    //            case CefDataType.Integer:
+    //                break;
+
+    //            case CefDataType.IPv4Address:
+    //                break;
+
+    //            case CefDataType.IPv6Address:
+    //                break;
+
+    //            case CefDataType.Long:
+    //                break;
+
+    //            case CefDataType.MACAddress:
+    //                break;
+
+    //            case CefDataType.String:
+    //                break;
+
+    //            case CefDataType.TimeStamp:
+    //                break;
+    //        }
+    //        return "";
+    //    }
+    //}
 
     public enum CefDataType
 	{
 		String,
-		Float,
+        FloatingPoint,
 		Long,
 		Integer,
 		IPv4Address,
-		IPv6Address
-	}
+		IPv6Address,
+        TimeStamp,
+        MACAddress
+    }
 }
